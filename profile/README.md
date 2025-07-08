@@ -201,7 +201,7 @@ graph LR
 
 | 🌐 **Site Web** | 📚 **Docs** | 🎥 **Portfolio FPV** | 📝 **Blog** | 💼 **LinkedIn** | 🐙 **GitHub** |
 |:---:|:---:|:---:|:---:|:---:|:---:|
-| [dontpaniclabs.com](https://dontpaniclabs.com) | [docs.dontpaniclabs.com](https://docs.dontpaniclabs.com) | [portfolio](https://dontpaniclabs.com/portfolio) | [blog.dontpaniclabs.com](https://blog.dontpaniclabs.com) | [LinkedIn](https://linkedin.com/company/dontpaniclabs) | [GitHub](https://github.com/dontpaniclabs) |
+| [dontpaniclabs.com](https://dontpaniclabs.tech) | [docs.dontpaniclabs.com](https://docs.dontpaniclabs.tech) | [portfolio](https://dontpaniclabs.tech/portfolio) | [blog.dontpaniclabs.com](https://blog.dontpaniclabs.tech) | [LinkedIn](https://linkedin.tech/company/dontpaniclabs) | [GitHub](https://github.tech/dontpaniclabs) |
 
 </div>
 
