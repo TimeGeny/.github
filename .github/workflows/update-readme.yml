@@ -1,0 +1,130 @@
+name: Update README with Dynamic Content
+on:
+  schedule:
+    # S'exécute tous les jours à 2h du matin (UTC)
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Permet le déclenchement manuel
+
+permissions:
+  contents: write
+
+jobs:
+  update-blog-posts:
+    name: Update blog posts section
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Update blog posts
+        uses: gautamkrishnar/blog-post-workflow@master
+        with:
+          feed_list: |
+            https://dev.to/feed/votre-username
+            https://medium.com/feed/@votre-username
+            https://votre-blog.com/feed.xml
+          max_post_count: 5
+          commit_message: "📝 Updated with latest blog posts"
+          date_format: "dd mmm yyyy"
+          template: "- [$title]($url) - $date"
+          
+  update-events:
+    name: Update events section
+    runs-on: ubuntu-latest
+    needs: update-blog-posts # S'exécute après la mise à jour des articles
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          
+      - name: Fetch latest changes
+        run: git pull
+        
+      - name: Fetch events from API
+        id: fetch-events
+        run: |
+          # Exemple de récupération d'événements depuis une API
+          # Remplacez par votre propre API
+          echo "<!-- EVENTS:START -->" > events.tmp
+          
+          # Simulation d'événements (remplacez par un vrai appel API)
+          cat << EOF >> events.tmp
+          - **[15 Nov]** 🎤 Conférence Tech Leaders - Paris
+          - **[22 Nov]** 💻 Workshop Docker & Kubernetes - En ligne
+          - **[5 Dec]** 🎉 Soirée de fin d'année - Lyon
+          - **[12 Dec]** 📚 Formation React Avancée - Marseille
+          EOF
+          
+          echo "<!-- EVENTS:END -->" >> events.tmp
+          
+      - name: Update README with events
+        run: |
+          # Remplace la section des événements dans le README
+          sed -i '/<!-- EVENTS:START -->/,/<!-- EVENTS:END -->/d' README.md
+          sed -i '/## 📅 Événements à Venir/r events.tmp' README.md
+          rm events.tmp
+          
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "📅 Updated events list"
+            git push
+          fi
+          
+  update-stats:
+    name: Update statistics
+    runs-on: ubuntu-latest
+    needs: update-events
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          
+      - name: Fetch latest changes
+        run: git pull
+        
+      - name: Generate statistics
+        run: |
+          # Exemple de génération de statistiques
+          # Remplacez par vos propres métriques
+          
+          CURRENT_DATE=$(date +"%d/%m/%Y")
+          
+          # Créer un fichier de statistiques temporaire
+          cat << EOF > stats.tmp
+          <!-- STATS:START -->
+          - 📊 Dernière mise à jour: ${CURRENT_DATE}
+          - 👥 Contributeurs actifs: 42
+          - 🚀 Déploiements cette semaine: 15
+          - ✅ Tests réussis: 98.5%
+          - 📦 Packages publiés: 12
+          <!-- STATS:END -->
+          EOF
+          
+      - name: Update README with stats
+        run: |
+          # Vérifie si la section STATS existe, sinon l'ajoute
+          if ! grep -q "<!-- STATS:START -->" README.md; then
+            echo -e "\n## 📈 Statistiques en Temps Réel\n\n<!-- STATS:START -->\n<!-- STATS:END -->" >> README.md
+          fi
+          
+          # Remplace la section des statistiques
+          sed -i '/<!-- STATS:START -->/,/<!-- STATS:END -->/d' README.md
+          sed -i '/## 📈 Statistiques en Temps Réel/r stats.tmp' README.md
+          rm stats.tmp
+          
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "📈 Updated statistics"
+            git push
+          fi
